@@ -41,7 +41,7 @@ i18next
     .init({
         fallbackLng: 'ru',
         backend: {
-            loadPath: './src/locales/{{lng}}/translation.json',
+            loadPath: './locales/{{lng}}/translation.json',
         },
     });
 app.use(translationMiddleware.handle(i18next));

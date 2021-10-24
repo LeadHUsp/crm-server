@@ -7,6 +7,7 @@ const slugify = require('slugify');
 class AttributeGroupController extends AttributeController {
     constructor() {
         super();
+        this.createSingleAttributeGroup = this.createSingleAttributeGroup.bind(this);
     }
     async getAllAttributeGroup(req, res, next) {
         try {
@@ -55,7 +56,7 @@ class AttributeGroupController extends AttributeController {
             next(ApiError.internal(error.message));
         }
     }
-    createSingleAttributeGroup = async (req, res, next) => {
+    async createSingleAttributeGroup(req, res, next) {
         try {
             const { name_user, name_admin, product_category, unit_text, show_in_filter, attribute } = req.body;
             const group = new AttributeGroup({
@@ -68,7 +69,7 @@ class AttributeGroupController extends AttributeController {
             });
 
             const newAttrGroup = await group.save().then(async (res) => {
-                if (attribute.length > 0) {
+                if (attribute && attribute.length > 0) {
                     const attrArray = attribute.map((item) => {
                         item.attribute_group = res._id;
                         return item;
@@ -88,8 +89,8 @@ class AttributeGroupController extends AttributeController {
         } catch (error) {
             next(ApiError.internal(error.message));
         }
-    };
-    updateSingleAttrGroup = async (req, res, next) => {
+    }
+    async updateSingleAttrGroup(req, res, next) {
         try {
             const { itemId } = req.params;
             const { name_user, name_admin, product_category, unit_text, show_in_filter, attribute } = req.body;
@@ -122,16 +123,16 @@ class AttributeGroupController extends AttributeController {
         } catch (error) {
             next(ApiError.internal(error.message));
         }
-    };
-    deleteAttribute = async (req, res, next) => {
+    }
+    async deleteAttribute(req, res, next) {
         try {
             const newAttrGroup = await this.deleteSingleAttribute(req, res, next);
             return res.status(200).json(newAttrGroup);
         } catch (error) {
             next(ApiError.internal(error.message));
         }
-    };
-    deleteAttributeGroup = async (req, res, next) => {
+    }
+    async deleteAttributeGroup(req, res, next) {
         try {
             const { itemId } = req.params;
             await AttributeGroup.findByIdAndDelete(itemId)
@@ -147,6 +148,6 @@ class AttributeGroupController extends AttributeController {
         } catch (error) {
             next(ApiError.internal(error.message));
         }
-    };
+    }
 }
 module.exports = new AttributeGroupController();
