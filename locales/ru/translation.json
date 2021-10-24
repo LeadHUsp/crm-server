@@ -1,0 +1,6 @@
+{
+    "error_name_category": "категория с таким именем уже существует",
+    "error_slug_category": "категория с таким slug уже существует",
+    "error_name_attrgroup": "Группа с таким именем уже существует",
+    "error_slug_attrgroup": "Группа с таким slug уже существует"
+}
