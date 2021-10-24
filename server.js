@@ -9,14 +9,14 @@ const serverTranslaetionFs = require('i18next-fs-backend');
 const translationMiddleware = require('i18next-http-middleware');
 
 //routes
-const authRoutes = require('./src/routes/auth');
-const adminRoutes = require('./src/routes/admin/auth');
-const categoryRoutes = require('./src/routes/category');
-const productRoutes = require('./src/routes/product');
-const attributeGroupRoute = require('./src/routes/attribute_group');
-const attributeRoute = require('./src/routes/attribute');
-const cartRoutes = require('./src/routes/cart');
-const galleryRoute = require('./src/routes/gallery');
+const authRoutes = require(path.join(__dirname, '/src/routes/auth'));
+const adminRoutes = require(path.join(__dirname, '/src/routes/admin/auth'));
+const categoryRoutes = require(path.join(__dirname, '/src/routes/category'));
+const productRoutes = require(path.join(__dirname, '/src/routes/product'));
+const attributeGroupRoute = require(path.join(__dirname, '/src/routes/attribute_group'));
+const attributeRoute = require(path.join(__dirname, '/src/routes/attribute'));
+const cartRoutes = require(path.join(__dirname, '/src/routes/cart'));
+const galleryRoute = require(path.join(__dirname, '/src/routes/gallery'));
 
 //enviroment variable
 env.config();
