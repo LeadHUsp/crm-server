@@ -9,14 +9,14 @@ const serverTranslaetionFs = require('i18next-fs-backend');
 const translationMiddleware = require('i18next-http-middleware');
 
 //routes
-const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin/auth');
-const categoryRoutes = require('./routes/category');
-const productRoutes = require('./routes/product');
-const attributeGroupRoute = require('./routes/attribute_group');
-const attributeRoute = require('./routes/attribute');
-const cartRoutes = require('./routes/cart');
-const galleryRoute = require('./routes/gallery');
+const authRoutes = require('./src/routes/auth');
+const adminRoutes = require('./src/routes/admin/auth');
+const categoryRoutes = require('./src/routes/category');
+const productRoutes = require('./src/routes/product');
+const attributeGroupRoute = require('./src/routes/attribute_group');
+const attributeRoute = require('./src/routes/attribute');
+const cartRoutes = require('./src/routes/cart');
+const galleryRoute = require('./src/routes/gallery');
 
 //enviroment variable
 env.config();
@@ -41,13 +41,13 @@ i18next
     .init({
         fallbackLng: 'ru',
         backend: {
-            loadPath: './locales/{{lng}}/translation.json',
+            loadPath: './src/locales/{{lng}}/translation.json',
         },
     });
 app.use(translationMiddleware.handle(i18next));
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 app.use('/api', authRoutes);
 app.use('/api', adminRoutes);
 app.use('/api', categoryRoutes);
