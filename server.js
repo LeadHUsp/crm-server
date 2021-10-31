@@ -7,6 +7,7 @@ const cors = require('cors');
 const i18next = require('i18next');
 const serverTranslaetionFs = require('i18next-fs-backend');
 const translationMiddleware = require('i18next-http-middleware');
+const cookieParser = require('cookie-parser');
 
 //routes
 const authRoutes = require(path.join(__dirname, '/src/routes/auth'));
@@ -20,20 +21,7 @@ const galleryRoute = require(path.join(__dirname, '/src/routes/gallery'));
 
 //enviroment variable
 env.config();
-//db connection
-mongoose
-    .connect(
-        `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PAS}@cluster0.m9iu0.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
-        }
-    )
-    .then(() => {
-        console.log('db connect');
-    });
+
 // translation config
 i18next
     .use(serverTranslaetionFs)
@@ -47,6 +35,7 @@ i18next
 app.use(translationMiddleware.handle(i18next));
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 app.use('/api', authRoutes);
 app.use('/api', adminRoutes);
@@ -57,6 +46,27 @@ app.use('/api', attributeRoute);
 app.use('/api', cartRoutes);
 app.use('/api', galleryRoute);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
-});
+const start = async () => {
+    try {
+        //db connection
+        await mongoose
+            .connect(
+                `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PAS}@cluster0.m9iu0.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
+                {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                    useCreateIndex: true,
+                    useFindAndModify: false,
+                }
+            )
+            .then(() => {
+                console.log('db connect');
+            });
+        app.listen(process.env.PORT, () => {
+            console.log(`Server is running on port ${process.env.PORT}`);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+start();
