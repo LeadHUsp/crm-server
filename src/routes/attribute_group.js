@@ -5,8 +5,8 @@ const AttrGroupValidator = require('../validators/attributeGroupValidator');
 const AttributeGroupController = require('../controller/attribute_group');
 
 const router = express.Router();
-
-router.get(['/attribute-group', '/attribute-group/category/:itemId'], AttributeGroupController.getAllAttributeGroup);
+router.get('/attribute-group/', AttributeGroupController.getAllAttributeGroup);
+router.get('/attribute-group/page=:page?', AttributeGroupController.getAllAttributeGroup);
 router.get('/attribute-group/:itemId', AttributeGroupController.getSingleAttributeGroup);
 router.post(
     '/attribute-group/',

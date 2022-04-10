@@ -12,6 +12,7 @@ const attributeGroupSchema = new Schema(
             required: true,
             trim: true,
             unique: true,
+            index: true,
         },
         show_in_filter: {
             type: Boolean,
@@ -22,7 +23,7 @@ const attributeGroupSchema = new Schema(
             unique: true,
         },
         unit_text: { type: String },
-        product_category: {
+        category: {
             type: Schema.Types.ObjectId,
             ref: 'Category',
         },
@@ -35,5 +36,5 @@ const attributeGroupSchema = new Schema(
     },
     { timestamps: true }
 );
-attributeGroupSchema.index({ name_admin: 'text' });
-module.exports = model('Attribute_group', attributeGroupSchema);
+
+module.exports = model('Attribute_group', attributeGroupSchema.index({ name_admin: 'text' }));

@@ -3,6 +3,7 @@ const Attribute = require('../models/attribute');
 const AttributeController = require('../controller/attribute');
 const ApiError = require('../error/errorHandler');
 const slugify = require('slugify');
+const queryString = require('query-string');
 
 class AttributeGroupController extends AttributeController {
     constructor() {
@@ -11,26 +12,28 @@ class AttributeGroupController extends AttributeController {
     }
     async getAllAttributeGroup(req, res, next) {
         try {
-            const { itemId } = req.params;
-            let { limit, page, name } = req.query;
+            let { page } = req.params;
+            let { limit, search, ...rest } = req.query;
+            let arrOfUrlObj = [];
+            for (const key in rest) {
+                const element = rest[key];
+                const obj = {};
+                obj[key] = element.split(',');
+                arrOfUrlObj.push(obj);
+            }
             page = Number(page) || 1;
-            limit = Number(limit) || 10;
+            limit = Number(limit) || 20;
             let findRequest = {};
-            if (name && itemId) {
+            if (search) {
                 findRequest = {
-                    $and: [{ $text: { $search: name } }, { product_category: itemId }],
+                    $and: [{ $text: { $search: search } }, ...arrOfUrlObj],
+                };
+            } else if (!search && arrOfUrlObj.length > 0) {
+                findRequest = {
+                    $and: arrOfUrlObj,
                 };
             }
-            if (name && !itemId) {
-                findRequest = {
-                    $text: { $search: name },
-                };
-            }
-            if (itemId && !name) {
-                findRequest = {
-                    product_category: itemId,
-                };
-            }
+
             const totalDocs = await AttributeGroup.countDocuments(findRequest);
             const totalPages = Math.ceil(totalDocs / limit);
             let offset = page * limit - limit;
@@ -39,7 +42,7 @@ class AttributeGroupController extends AttributeController {
                 limit: limit,
             })
                 .populate('attribute')
-                .populate({ path: 'product_category', select: 'name' })
+                .populate({ path: 'category', select: 'name' })
                 .exec();
             res.set({ 'Access-Control-Expose-Headers': 'X_TotalPages', X_TotalPages: totalPages });
             return res.status(200).json(attrItems);
@@ -58,12 +61,15 @@ class AttributeGroupController extends AttributeController {
     }
     async createSingleAttributeGroup(req, res, next) {
         try {
-            const { name_user, name_admin, product_category, unit_text, show_in_filter, attribute } = req.body;
+            const { name_user, name_admin, category, unit_text, show_in_filter, attribute } = req.body;
             const group = new AttributeGroup({
                 name_user,
                 name_admin,
-                slug: slugify(name_admin.toLowerCase()),
-                product_category,
+                slug: slugify(name_admin, {
+                    lower: true,
+                    remove: /[*+~.()'"!:@]/g,
+                }),
+                category,
                 show_in_filter,
                 unit_text,
             });
@@ -71,6 +77,10 @@ class AttributeGroupController extends AttributeController {
             const newAttrGroup = await group.save().then(async (res) => {
                 if (attribute && attribute.length > 0) {
                     const attrArray = attribute.map((item) => {
+                        item.slug = slugify(item.value, {
+                            lower: true,
+                            remove: /[*+~.()'"!:@]/g,
+                        });
                         item.attribute_group = res._id;
                         return item;
                     });
@@ -93,14 +103,14 @@ class AttributeGroupController extends AttributeController {
     async updateSingleAttrGroup(req, res, next) {
         try {
             const { itemId } = req.params;
-            const { name_user, name_admin, product_category, unit_text, show_in_filter, attribute } = req.body;
+            const { name_user, name_admin, category, unit_text, show_in_filter, attribute } = req.body;
             const updatedAttrGroup = await AttributeGroup.findByIdAndUpdate(
                 itemId,
                 {
                     name_user,
                     name_admin,
                     slug: slugify(name_admin.toLowerCase()),
-                    product_category,
+                    category,
                     unit_text,
                     show_in_filter,
                 },

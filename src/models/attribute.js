@@ -6,6 +6,7 @@ const attributeSchema = new Schema({
         required: true,
         trim: true,
     },
+    slug: { type: String, required: true, unique: true },
     attribute_group: {
         type: Schema.Types.ObjectId,
         ref: 'Attribute_group',
