@@ -6,11 +6,11 @@ const attributeSchema = new Schema({
         required: true,
         trim: true,
     },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, required: true },
     attribute_group: {
         type: Schema.Types.ObjectId,
         ref: 'Attribute_group',
     },
 });
-attributeSchema.index({ value: 'text' });
+
 module.exports = model('Attribute', attributeSchema);

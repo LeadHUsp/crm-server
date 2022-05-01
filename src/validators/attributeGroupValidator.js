@@ -9,7 +9,7 @@ class AttrGroupValidator {
             const itemWithSlug = slug && (await AttributeGroup.findOne({ slug: slug }).exec());
             let errors = {};
             if (itemWithName || itemWithSlug) {
-                if (itemWithName) errors['name'] = req.t('error_name_attrgroup');
+                if (itemWithName) errors['name_admin'] = req.t('error_name_attrgroup');
                 if (itemWithSlug) errors['slug'] = req.t('error_slug_attrgroup');
 
                 return res.status(500).send(errors);
@@ -33,7 +33,7 @@ class AttrGroupValidator {
                 }).exec());
             let errors = {};
             if (itemWithName || itemWithSlug) {
-                if (itemWithName) errors['name'] = req.t('error_name_attrgroup');
+                if (itemWithName) errors['name_admin'] = req.t('error_name_attrgroup');
                 if (itemWithSlug) errors['slug'] = req.t('error_slug_attrgroup');
 
                 return res.status(500).send(errors);

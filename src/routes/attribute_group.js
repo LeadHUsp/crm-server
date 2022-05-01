@@ -10,16 +10,18 @@ router.get('/attribute-group/page=:page?', AttributeGroupController.getAllAttrib
 router.get('/attribute-group/:itemId', AttributeGroupController.getSingleAttributeGroup);
 router.post(
     '/attribute-group/',
+    requireSigin,
+    adminMiddleware,
     AttrGroupValidator.createItemValidator,
     AttributeGroupController.createSingleAttributeGroup
 );
 router.put(
     '/attribute-group/:itemId',
+    requireSigin,
+    adminMiddleware,
     AttrGroupValidator.updateItemValidator,
     AttributeGroupController.updateSingleAttrGroup
 );
-router.put('/attribute-group/update-attribute/:itemId', AttributeGroupController.updateSingleAttribute);
-router.delete('/attribute/:itemId', AttributeGroupController.deleteAttribute);
 router.delete('/attribute-group/:itemId', AttributeGroupController.deleteAttributeGroup);
 
 module.exports = router;

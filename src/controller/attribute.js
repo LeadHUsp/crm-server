@@ -16,18 +16,19 @@ class AttributeController extends CrudController {
             next(ApiError.internal(error.message));
         }
     }
-    async updateSingleAttribute(itemId, value, attrGroup, next) {
+    async updateSingleAttribute({ _id, value, slug, attrGroup, next }) {
         try {
-            if (itemId !== undefined) {
+            if (_id !== undefined) {
                 const res = await Attribute.findByIdAndUpdate(
-                    itemId,
-                    { value, attribute_group: attrGroup },
+                    _id,
+                    { slug, value, attribute_group: attrGroup },
                     { new: true }
                 );
                 return res;
             } else {
                 const res = await Attribute.create({
                     value,
+                    slug,
                     attribute_group: attrGroup,
                 });
                 await AttributeGroup.findByIdAndUpdate(attrGroup, { $push: { attribute: res._id } });
@@ -37,9 +38,8 @@ class AttributeController extends CrudController {
             next(ApiError.internal(error.message));
         }
     }
-    async deleteSingleAttribute(req, res, next) {
+    async deleteSingleAttribute(itemId, next) {
         try {
-            const { itemId } = req.params;
             const attr = await Attribute.findById(itemId);
 
             const newAttrGroup = await Attribute.deleteOne({ _id: itemId })
@@ -55,13 +55,10 @@ class AttributeController extends CrudController {
                         },
                         { new: true }
                     )
-                        .populate('attribute')
                         .then((res) => res)
                         .catch((error) => next(ApiError.internal(error.message)));
-                    return newAttrGroup;
                 })
                 .catch((error) => next(ApiError.internal(error.message)));
-            return newAttrGroup;
         } catch (error) {
             next(ApiError.internal(error.message));
         }
