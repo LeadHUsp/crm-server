@@ -7,6 +7,7 @@ const ProductController = require('../controller/product');
 const router = express.Router();
 
 router.get('/product', ProductController.getAllProducts);
+router.post('/product/createmoc', ProductController.createMocData);
 // router.get('/category/:itemId', categoryController.getSingleCategoryItem);
 router.post('/product/', ProductController.createSingleProduct);
 // router.put(

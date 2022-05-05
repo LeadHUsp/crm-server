@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const productSchema = new Schema(
     {
-        title: {
+        name: {
             type: String,
             required: true,
             trim: true,
@@ -11,50 +11,66 @@ const productSchema = new Schema(
         slug: {
             type: String,
             required: true,
+            trim: true,
             unique: true,
         },
-
-        description: {
-            type: String,
-            // required: true,
+        price: {
+            type: Number,
+            required: true,
             trim: true,
+        },
+        amount: {
+            type: Number,
+            required: true,
+            trim: true,
+        },
+        seo_title: {
+            type: String,
+            required: false,
+        },
+        seo_description: {
+            type: String,
+            required: false,
+        },
+        seo_keywords: {
+            type: String,
+            required: false,
         },
         thumb: {
             type: Schema.Types.ObjectId,
             ref: 'Gallery',
         },
-
         gallery: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Gallery',
             },
         ],
-        options: [
-            {
-                amount: {
-                    type: Number,
-                    required: true,
-                },
-                price: {
-                    type: Number,
-                    required: true,
-                },
-                attribute: {
-                    type: Schema.Types.ObjectId,
-                    ref: 'Attribute',
-                },
-            },
-        ],
+        vendore_code: {
+            type: String,
+            required: true,
+            trim: true,
+            unique: true,
+        },
+        size_box: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        weight_box: {
+            type: String,
+            required: true,
+            trim: true,
+        },
         attribute: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Attribute',
             },
         ],
-        category: {
+        group: {
             type: Schema.Types.ObjectId,
-            ref: 'Category',
+            ref: 'ProductGroup',
         },
     },
     { timestamps: true }
