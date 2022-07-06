@@ -62,6 +62,12 @@ const productSchema = new Schema(
             required: true,
             trim: true,
         },
+        card_attribute: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Attribute',
+            },
+        ],
         attribute: [
             {
                 type: Schema.Types.ObjectId,

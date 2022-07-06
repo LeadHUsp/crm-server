@@ -78,12 +78,15 @@ class galleryController {
             const totalDocs = await Gallery.countDocuments({});
             let { limit, page } = req.query;
             page = page || 1;
-            limit = limit || 10;
+            limit = limit || 12;
             const totalPages = Math.ceil(totalDocs / limit);
             let offset = page * limit - limit;
             const allGalleryItems = await Gallery.find({}, null, {
                 skip: offset,
                 limit: limit,
+                sort: {
+                    createdAt: -1,
+                },
             }).exec();
 
             return res
@@ -137,11 +140,9 @@ class galleryController {
                     await fs.promises
                         .unlink(path.resolve(__dirname, '../../', 'uploads', item.name))
                         .then((res) => res)
-                        .catch((error) => console.log(error));
+                        .catch((error) => error);
                 })
-            )
-                .then((responses) => console.log(responses))
-                .catch((error) => console.log(error));
+            ).catch((error) => error);
 
             await Gallery.deleteMany({ _id: { $in: ids } }).exec();
             return res.status(200).json({

@@ -113,7 +113,7 @@ class AttributeGroupController extends AttributeController {
                     name_user,
                     name_admin,
                     slug: slug,
-                    category,
+                    category: category || null,
                     unit_text,
                     show_in_filter,
                 },

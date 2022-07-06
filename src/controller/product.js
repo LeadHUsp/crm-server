@@ -1,11 +1,15 @@
 const Product = require('../models/product');
+const ProductGroupController = require('../models/product_group');
 const slugify = require('slugify');
 const ApiError = require('../error/errorHandler');
 const {
     Types: { ObjectId },
 } = require('mongoose');
-class ProductController {
-    constructor() {}
+class ProductController extends ProductGroupController {
+    constructor() {
+        super();
+        this.createSingleProduct = this.createSingleProduct.bind(this);
+    }
     async getAllProducts(req, res, next) {
         try {
             const { categoryId } = req.params;
@@ -43,8 +47,49 @@ class ProductController {
     }
     async createSingleProduct(req, res, next) {
         try {
-            const product = new Product(req.body);
-            const newProduct = await product.save();
+            const {
+                name,
+                slug,
+                options,
+                price,
+                amount,
+                seo_title,
+                seo_description,
+                seo_keywords,
+                thumb,
+                gallery,
+                vendore_code,
+                size_box,
+                weight_box,
+                attribute,
+                is_single_product,
+            } = req.body;
+            //при создании продукта без опций создаем товар и группу товаров,
+            //требуется для коректной работы выборки, котороая основывается на группировке товаров по полю group
+            if (is_single_product && options.lenght === 0) {
+                const productGroup = await this.createSingleProductGroup(req, res, next);
+                const newProduct = await Product({
+                    name,
+                    slug:
+                        slug ||
+                        slugify(name, {
+                            lower: true,
+                            remove: /[*+~()'"!:@]/g,
+                        }),
+                    price: price,
+                    amount: amount || 0,
+                    seo_title: seo_title || null,
+                    seo_description: seo_description || null,
+                    seo_keywords: seo_keywords || null,
+                    thumb: thumb || null,
+                    gallery: gallery || [],
+                    vendore_code,
+                    size_box,
+                    weight_box,
+                    attribute,
+                    group: productGroup._id,
+                }).save();
+            }
             return res.status(201).json(newProduct);
         } catch (error) {
             next(ApiError.internal(error.message));
