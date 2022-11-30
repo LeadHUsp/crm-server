@@ -85,7 +85,7 @@ class galleryController {
                 skip: offset,
                 limit: limit,
                 sort: {
-                    createdAt: -1,
+                    createdAt: 1,
                 },
             }).exec();
 
